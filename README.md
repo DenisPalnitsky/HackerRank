@@ -1,3 +1,3 @@
 # HackerRank
 
-Slutiond for Hackerrank.com task.
+Slutions for Hackerrank.com task.
