@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace ArrayAndSimpleQueries
 {
-    [DebuggerDisplay("Val={val}, Prior={prior}")]
+    [DebuggerDisplay("Index={index}, Val={val}")]
     class Node
     {
-        public int val;
+        public int index;
         public int prior;
+        public int val;
 
         public Node l;
-        public Node r;
+        public Node r;        
     }
 
     class Treap
@@ -28,7 +29,7 @@ namespace ArrayAndSimpleQueries
                 l = null;
                 r = null;
             }
-            else if (t.val <= key)
+            else if (t.index <= key)
             {
                 split(t.r, ref t.r, ref r, key);
                 l = t; //elem=key comes in l
@@ -63,29 +64,31 @@ namespace ArrayAndSimpleQueries
                 t = it;
             else if (it.prior > t.prior)
             {
-                split(t, ref it.l, ref it.r, it.val);
+                split(t, ref it.l, ref it.r, it.index);
                 t = it;
             }
             else
             {                
-                if (t.val <= it.val)
+                if (t.index <= it.index)
                     insert(ref t.r, it);
                 else 
                     insert (ref t.l, it);
             }
         }
 
-        public static Node init(int val)
+        public static Node init(int val, int index)
         {
             Node ret = new Node();
+            ret.index = index;
             ret.val = val;
-            ret.prior = randomizer.Next(10);
+            ret.prior = randomizer.Next();
             return ret;
         }
 
-        public static Node init(int val, int priority)
+        public static Node init(int val, int index,  int priority)
         {
             Node ret = new Node();
+            ret.index = index;
             ret.val = val;
             ret.prior = priority;
             return ret;
@@ -93,22 +96,23 @@ namespace ArrayAndSimpleQueries
 
         public static void AddL(ref Node l)
         {
-            l = new Node() { val = 5 };
+            l = new Node() { index = 5 };
         }
 
         public static void print(Node node)
         {
-            traverse(node);
+            traverse(node, 0);
             Console.WriteLine();
         }
 
-        public static void traverse(Node root)
+        public static void traverse(Node root, int counter)
         {
             if (root != null)
-            {
-                Console.Write("[{0}:{1}],", root.val, root.prior);
-                traverse(root.l);
-                traverse(root.r);
+            {                
+                traverse(root.l, counter);
+                Console.Write("[{0}:{1}],", counter, root.val);
+                counter++;
+                traverse(root.r, counter);
             }
         }
         

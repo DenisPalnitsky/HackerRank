@@ -21,24 +21,46 @@ namespace ArrayAndSimpleQueries
                 J = j;
             }
         }
-       
+
         static void Main(string[] args)
         {
-            var root = Treap.init(50,15);                                    
-            var node2 = Treap.init(30, 5);            
-            var node3 = Treap.init(70, 10);
-            var node4 = Treap.init(20, 2);
-            var node5 = Treap.init(40, 4);                    
 
-            Treap.insert(ref root, node2);
-            Treap.insert(ref root, node3);
-            Treap.insert(ref root, node4);
-            Treap.insert(ref root, node5);
-            Treap.print(root);                                    
+            int[] array = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+            var root = parse(array);
+            
+            
+
+
+            //1 2 4
+            //2 3 5
+            //1 4 7
+            //2 1 4
+
+            perforQuery(root, new Query(1, 2, 4));
+            perforQuery(root, new Query(2, 3, 5));
+            perforQuery(root, new Query(1, 4, 7));
+            perforQuery(root, new Query(2, 1, 4));
+
+            
+            Treap.print(root);
 
             Console.ReadKey();
+        }
 
+        private static Node parse(int[] array)
+        {
+            int initialIndex =  array.Length / 2;
 
+            var root =  Treap.init(array[initialIndex], initialIndex);
+
+            for (int i=0;i< array.Length;i++)
+            {
+                if (i!= initialIndex)
+                    Treap.insert(ref root, Treap.init(array[i], i));
+            }
+
+            return root;
         }
 
         private static void Solution()
@@ -60,9 +82,8 @@ namespace ArrayAndSimpleQueries
             return Console.ReadLine().Split(' ').Select(s => int.Parse(s)).ToArray();
         }
 
-        private static void PerforQuery( int[] array, Query query )
+        private static void perforQuery( Node root, Query query)
         {
-
             switch (query.QueryType)
             {
                 case 1:
