@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,20 +7,22 @@ using System.Threading.Tasks;
 
 namespace Heap.JesseAndCookies
 {
-    class Program
+    [TestFixture]
+    public class Program
     {
-
         static List<int> heap = new List<int>() { int.MinValue } ;
 
         static int parent (int i) { return i / 2; }
+        
         static int left(int i) {
-            var r= 2*i;
-            return r >= heap.Count - 1? 0 : r; 
+            var r = 2*i;
+            return r >= heap.Count ? 0 : r; 
         }
+        
         static int right(int i)
         {
             var r = 2 * i + 1;
-            return r >= heap.Count - 1 ? 0 : r;
+            return r >= heap.Count  ? 0 : r;
         }
 
         static void insert (int val)
@@ -57,8 +60,8 @@ namespace Heap.JesseAndCookies
                 {
                     if (r>0 && heap[r] < heap[i])
                     {
-                        swap(l, i);
-                        percolatingDown(l);
+                        swap(r, i);
+                        percolatingDown(r);
                     }                    
                 }
             }
@@ -84,25 +87,113 @@ namespace Heap.JesseAndCookies
             }            
         }
 
-        static void Main(string[] args)
+        private static int solve(int K, IEnumerable<int> arr)
         {
-            //int[] arr = new int[] { 1, 2, 3, 9, 10, 12 };
-
-            int K = int.Parse(Console.ReadLine().Split(' ')[1]);
-            var arr = Console.ReadLine().Split(' ').Select(i => int.Parse(i));
-
             foreach (int i in arr)
                 insert(i);
 
             int counter = 0;
 
-
-            while (heap[1] <= K)
+            while (heap[1] <= K && heap.Count >= 3)
             {
                 insert(removeRoot() + removeRoot() * 2);
                 counter++;
             }
-            Console.WriteLine(counter);
+
+
+            return heap[1] >= K ? counter : -1;
         }
+
+        static void Main(string[] args)
+        {            
+            int K = int.Parse(Console.ReadLine().Split(' ')[1]);
+            var l = Console.ReadLine().Split(' ').Select(i => int.Parse(i));
+            
+            int counter = solve(K, l);
+
+            Console.WriteLine(counter);        
+        }
+               
+
+        #region Tests
+
+        [Test]
+        public static void TestNoAnswer()
+        {
+            int[] arr = new int[] { 1, 2, 3};
+            int K = 50;
+
+            Assert.AreEqual(-1, solve(K, arr));                
+        }
+
+
+        [Test]
+        public static void TestCase1()
+        {
+            int[] arr = new int[] { 1, 2, 3, 9, 10, 12 };
+            int K = 7;
+                        
+            Assert.AreEqual(2, solve(K, arr));
+        }
+
+        [Test]
+        public static void TestCase2()
+        {
+            int[] arr = new int[] { 1, 2, 3, 4};
+            int K = 27;
+
+            Assert.AreEqual(3, solve(K, arr));
+        }
+
+        [Test]
+        public static void TestCase3()
+        {
+            int[] arr = new int[] { 1, 2, 3, 4 };
+            int K = 28;
+
+            Assert.AreEqual(-1, solve(K, arr));
+        }
+
+
+        [Test]
+        public static void TestInsert()
+        {
+            int[] arr = new int[] { 6, 7, 12, 10, 15, 17 };
+
+            foreach (int i in arr)
+                insert(i);
+
+            string s = string.Join(",", heap.Skip(1));
+
+            insert(5);
+
+            s = string.Join(",", heap.Skip(1));
+            CollectionAssert.AreEqual(
+                new int[] { 5,7,6,10,15,17,12 },
+                 heap.Skip(1));
+        }
+
+        [Test]
+        public static void TestRemove()
+        {
+            int[] arr = new int[] { 6, 7, 12, 10, 15, 17 };
+
+            foreach (int i in arr)
+                insert(i);
+
+            string s = string.Join(",", heap.Skip(1));
+
+            insert(5);
+            Assert.AreEqual(5, removeRoot());
+
+            s = string.Join(",", heap.Skip(1));
+            
+            CollectionAssert.AreEqual(
+                new int[] { 6,7,12,10,15,17},
+                 heap.Skip(1));
+        }
+
+        #endregion
+
     }
 }
