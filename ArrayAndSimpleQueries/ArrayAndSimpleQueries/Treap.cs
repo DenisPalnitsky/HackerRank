@@ -7,42 +7,96 @@ using System.Threading.Tasks;
 
 namespace ArrayAndSimpleQueries
 {
-    [DebuggerDisplay("Index={index}, Val={val}")]
+    [DebuggerDisplay("Val={val}, Prior={prior}")]
     class Node
     {
-        public int index;
+        //public int index;
         public int prior;
         public int val;
+        public int size = 1;
+        
+        public void recalc()
+        {
+            size = sizeOf(l) + sizeOf(r) + 1;
+        }
+
+        public static int sizeOf(Node treap)
+        {
+            return treap == null ? 0 : treap.size;
+        }
 
         public Node l;
         public Node r;        
     }
 
     class Treap
-    {        
-        static Random randomizer = new Random();
+    {
 
-        public static void split(Node t, ref Node l, ref Node r, int key)
+        //public static void split(Node t, ref Node l, ref Node r, int key)
+        //{
+        //    if (t == null)
+        //    {
+        //        l = null;
+        //        r = null;
+        //    }
+
+        //    else if (t.index <= key)
+        //    {
+        //        split(t.r, ref t.r, ref r, key);
+        //        l = t; //elem=key comes in l
+        //    }
+        //    else
+        //    {
+        //        split(t.l, ref l, ref t.l, key);
+        //        r = t;
+        //    }
+        //}
+
+        public static void split(int x, Node t, out Node l, out Node r)
         {
-            if (t == null)
+            Node newTree = null;
+            int curIndex = Node.sizeOf(t.l) + 1;
+
+            if (curIndex <= x)
             {
-                l = null;
-                r = null;
-            }
-            else if (t.index <= key)
-            {
-                split(t.r, ref t.r, ref r, key);
-                l = t; //elem=key comes in l
+                if (t.r == null)
+                    r = null;
+                else
+                    split(x - curIndex, t.r, out newTree, out r);
+                
+                l = new Node()
+                {
+                    prior = t.prior,
+                    val = t.val,
+                    l = t.l,
+                    r = newTree
+                };
+             
+                l.recalc();
+                
             }
             else
             {
-                split(t.l, ref l, ref t.l, key);
-                r = t;
-            }
+                if (t.l == null)
+                    l = null;
+                else
+                     split(x, t.l, out l, out newTree);
 
+                r = new Node 
+                {
+                 prior = t.prior,
+                 val = t.val,
+                 l = newTree,
+                 r = t.r
+                };
+                    
+                r.recalc();
+            }
         }
 
-        public void merge(ref Node t, Node l, Node r)
+
+
+        public static void merge(ref Node t, Node l, Node r)
         {
             if (l == null || r == null)
                 t = l ?? r;
@@ -58,46 +112,51 @@ namespace ArrayAndSimpleQueries
             }
         }
 
-        public static void insert(ref Node t, Node it)
+        public static void add(ref Node root, Node nodeToAdd)
         {
-            if (t == null)
-                t = it;
-            else if (it.prior > t.prior)
-            {
-                split(t, ref it.l, ref it.r, it.index);
-                t = it;
-            }
-            else
-            {                
-                if (t.index <= it.index)
-                    insert(ref t.r, it);
-                else 
-                    insert (ref t.l, it);
-            }
+            merge(ref root, root, nodeToAdd);
         }
 
-        public static Node init(int val, int index)
+        //public static void insert(ref Node t, Node it)
+        //{
+        //    if (t == null)
+        //        t = it;
+        //    else if (it.prior > t.prior)
+        //    {
+        //        split(t, ref it.l, ref it.r, it.index);
+        //        t = it;
+        //    }
+        //    else
+        //    {                
+        //        if (t.index <= it.index)
+        //            insert(ref t.r, it);
+        //        else 
+        //            insert (ref t.l, it);
+        //    }
+        //}
+
+        static Random randomizer = new Random();
+        public static Node init(int val)
         {
-            Node ret = new Node();
-            ret.index = index;
+            Node ret = new Node();            
             ret.val = val;
             ret.prior = randomizer.Next();
             return ret;
         }
 
-        public static Node init(int val, int index,  int priority)
-        {
-            Node ret = new Node();
-            ret.index = index;
-            ret.val = val;
-            ret.prior = priority;
-            return ret;
-        }
+        //public static Node init(int val, int index,  int priority)
+        //{
+        //    Node ret = new Node();
+        //    ret.index = index;
+        //    ret.val = val;
+        //    ret.prior = priority;
+        //    return ret;
+        //}
 
-        public static void AddL(ref Node l)
-        {
-            l = new Node() { index = 5 };
-        }
+        //public static void AddL(ref Node l)
+        //{
+        //    l = new Node() { index = 5 };
+        //}
 
         public static void print(Node node)
         {
@@ -110,7 +169,7 @@ namespace ArrayAndSimpleQueries
             if (root != null)
             {                
                 traverse(root.l, counter);
-                Console.Write("[{0}:{1}],", counter, root.val);
+                Console.Write("[{0}]",  root.val);
                 counter++;
                 traverse(root.r, counter);
             }

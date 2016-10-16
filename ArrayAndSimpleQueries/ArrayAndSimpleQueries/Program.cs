@@ -11,36 +11,67 @@ namespace ArrayAndSimpleQueries
         class Query
         {
             public int QueryType;
-            public int I;
-            public int J;
+            public int i;
+            public int j;
 
             public Query(int t, int i, int j)
             {
                 QueryType = t;
-                I = i;
-                J = j;
+                i = i;
+                j = j;
             }
+        }
+
+
+        // TODO: Fix doesn't work
+        public static void testSplit()
+        {
+            int[] arr = { 1, 2, 3, 4, 5};
+
+            //int[] arr = new int[100];
+            //for (int i = 0; i < 100; i++)
+            //    arr[i] = i;                            
+                        
+
+            var root = parse(arr);
+
+            Treap.print(root);
+            Node l = null, r = null;
+            Treap.split(3, root, out l, out r);
+
+            Treap.merge(ref root, r, l);
+            
+            
+            Treap.print(root);
+
         }
 
         static void Main(string[] args)
         {
 
-            int[] array = { 1, 2, 3, 4, 5, 6, 7, 8 };
+            testSplit();
 
-            var root = parse(array);
-            
-            
+            int[] arr = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
+            //int[] arr = new int[100];
+            //for (int i = 0; i < 100; i++)
+            //    arr[i] = i;                            
+                        
+
+            var root = parse(arr);
+            
+            Treap.print(root);
+          
 
             //1 2 4
             //2 3 5
             //1 4 7
             //2 1 4
 
-            perforQuery(root, new Query(1, 2, 4));
-            perforQuery(root, new Query(2, 3, 5));
-            perforQuery(root, new Query(1, 4, 7));
-            perforQuery(root, new Query(2, 1, 4));
+            performQuery(ref root, new Query(1, 2, 4));
+            //performQuery(root, new Query(2, 3, 5));
+            //performQuery(root, new Query(1, 4, 7));
+            //performQuery(root, new Query(2, 1, 4));
 
             
             Treap.print(root);
@@ -50,14 +81,12 @@ namespace ArrayAndSimpleQueries
 
         private static Node parse(int[] array)
         {
-            int initialIndex =  array.Length / 2;
 
-            var root =  Treap.init(array[initialIndex], initialIndex);
+            var root = Treap.init(array[0]);
 
-            for (int i=0;i< array.Length;i++)
-            {
-                if (i!= initialIndex)
-                    Treap.insert(ref root, Treap.init(array[i], i));
+            for (int i=1; i< array.Length;i++)
+            {                
+                Treap.add(ref root, Treap.init(array[i]));
             }
 
             return root;
@@ -82,11 +111,21 @@ namespace ArrayAndSimpleQueries
             return Console.ReadLine().Split(' ').Select(s => int.Parse(s)).ToArray();
         }
 
-        private static void perforQuery( Node root, Query query)
+        private static void performQuery(ref Node root, Query q)
         {
-            switch (query.QueryType)
+            switch (q.QueryType)
             {
                 case 1:
+                    Node l = null;
+                    Node middle = null; 
+                    Node r = null;
+                    
+                    Treap.split(q.i, root, out l, out r);
+                    Treap.split(q.j, r, out middle, out r);
+
+                    Treap.merge(ref middle, middle, l);
+                    Treap.merge(ref middle, middle, r);
+                    root = middle;
                     break;
                 case 2:
                     break;
