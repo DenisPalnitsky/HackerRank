@@ -48,6 +48,7 @@ namespace ArrayAndSimpleQueries
 
         static void Main(string[] args)
         {
+            testMerge();
 
             testSplit();
 
@@ -79,9 +80,35 @@ namespace ArrayAndSimpleQueries
             Console.ReadKey();
         }
 
+        private static void testMerge()
+        {
+            var n0 = new Node() { val = 52, prior = 3 };
+            var n1 = new Node() { val = 14, prior = 5 };
+            var n2 = new Node() { val = 37, prior = 2 };
+            var n3 = new Node() { val = 91, prior = 7 };
+            var n4 = new Node() { val = 42, prior = 8 };
+            var n5 = new Node() { val = 10, prior = 4 };
+            var n6 = new Node() { val = 13, prior = 1 };
+            var n7 = new Node() { val = 3, prior = 6 };
+            var n8 = new Node() { val = 29, prior = 0 };
+             
+            Node root = null;
+            Treap.merge(ref root, n0, n1);            
+            Treap.merge(ref root, root, n2);            
+            Treap.merge(ref root, root, n3);            
+            Treap.merge(ref root, root, n4);            
+            Treap.merge(ref root, root, n5);            
+            Treap.merge(ref root, root, n6);            
+            Treap.merge(ref root, root, n7);            
+            Treap.merge(ref root, root, n8);
+
+            Node l = null , r = null;
+            Treap.split(6, root, out l, out r);
+            Treap.print(root);            
+        }
+
         private static Node parse(int[] array)
         {
-
             var root = Treap.init(array[0]);
 
             for (int i=1; i< array.Length;i++)

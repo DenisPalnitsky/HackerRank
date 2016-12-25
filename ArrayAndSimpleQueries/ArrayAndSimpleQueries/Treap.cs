@@ -32,26 +32,6 @@ namespace ArrayAndSimpleQueries
     class Treap
     {
 
-        //public static void split(Node t, ref Node l, ref Node r, int key)
-        //{
-        //    if (t == null)
-        //    {
-        //        l = null;
-        //        r = null;
-        //    }
-
-        //    else if (t.index <= key)
-        //    {
-        //        split(t.r, ref t.r, ref r, key);
-        //        l = t; //elem=key comes in l
-        //    }
-        //    else
-        //    {
-        //        split(t.l, ref l, ref t.l, key);
-        //        r = t;
-        //    }
-        //}
-
         public static void split(int x, Node t, out Node l, out Node r)
         {
             Node newTree = null;
@@ -95,7 +75,7 @@ namespace ArrayAndSimpleQueries
         }
 
 
-
+        // merge works fine
         public static void merge(ref Node t, Node l, Node r)
         {
             if (l == null || r == null)
@@ -140,7 +120,7 @@ namespace ArrayAndSimpleQueries
         {
             Node ret = new Node();            
             ret.val = val;
-            ret.prior = randomizer.Next();
+            ret.prior = randomizer.Next(100);
             return ret;
         }
 
@@ -160,20 +140,53 @@ namespace ArrayAndSimpleQueries
 
         public static void print(Node node)
         {
-            traverse(node, 0);
+            traverse(node, 0, root => Console.Write("[{0}]",  root.val));
             Console.WriteLine();
         }
 
-        public static void traverse(Node root, int counter)
+
+
+        public static void traverse(Node root, int counter, Action<Node> act)
         {
             if (root != null)
             {                
-                traverse(root.l, counter);
-                Console.Write("[{0}]",  root.val);
+                traverse(root.l, counter, act);
+                act(root);
                 counter++;
-                traverse(root.r, counter);
+                traverse(root.r, counter, act);
             }
         }
         
     }
+
+
+    static class  Extension {
+        
+        public static List<int> ConvertToArray(this Node root)
+        {
+            List<int> l = new List<int>();
+            Treap.traverse(root, 0, n => l.Add(n.val));
+            return l;
+        }
+
+        public static string ToArrayString(this Node root)
+        {
+            return String.Join(" ", root.ConvertToArray()); 
+        }
+
+        public static Node FromArray(params int[] a)
+        {                       
+            Node root = null;
+                         
+            Treap.merge(ref root,  Treap.init(a.First()), Treap.init(a.Skip(1).First()));
+
+            foreach (var n in a.Skip(2))
+            {
+                Treap.merge(ref root, root, Treap.init(n));
+            }
+
+            return root;
+        }
+    }
+
 }
