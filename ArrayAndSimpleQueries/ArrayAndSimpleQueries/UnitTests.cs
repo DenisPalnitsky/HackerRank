@@ -136,10 +136,10 @@ namespace ArrayAndSimpleQueries
         public void SplitRegression2()
         {
             Node root,l,r = null;
-            root = Extension.FromArray(1, 2, 3, 4, 5, 6, 7, 8);
+            root = Extension.FromArray(1, 2, 3, 4);
             Treap.split(3, root, out l, out r);
 
-            CollectionAssert.AreEqual(new[] { 3, 4, 5, 6, 7, 8 }, r.ToArray());
+            CollectionAssert.AreEqual(new[] { 4 }, r.ToArray());
         }
 
 
