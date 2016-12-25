@@ -6,60 +6,32 @@ using System.Threading.Tasks;
 
 namespace ArrayAndSimpleQueries
 {
+    class Query
+    {
+        public int QueryType;
+        public int i;
+        public int j;
+
+        public Query(int t, int i, int j)
+        {
+            QueryType = t;
+            this.i = i-1;
+            this.j = j-1;
+        }
+    }
+
     class Program
-    {        
-        class Query
-        {
-            public int QueryType;
-            public int i;
-            public int j;
-
-            public Query(int t, int i, int j)
-            {
-                QueryType = t;
-                i = i;
-                j = j;
-            }
-        }
-
-
-        // TODO: Fix doesn't work
-        public static void testSplit()
-        {
-            int[] arr = { 1, 2, 3, 4, 5};
-
-            //int[] arr = new int[100];
-            //for (int i = 0; i < 100; i++)
-            //    arr[i] = i;                            
-                        
-
-            var root = parse(arr);
-
-            Treap.print(root);
-            Node l = null, r = null;
-            Treap.split(3, root, out l, out r);
-
-            Treap.merge(ref root, r, l);
-            
-            
-            Treap.print(root);
-
-        }
+    {                
 
         static void Main(string[] args)
         {
-            testMerge();
+            //testMerge();
 
-            testSplit();
+            //testSplit();
 
             int[] arr = { 1, 2, 3, 4, 5, 6, 7, 8 };
-
-            //int[] arr = new int[100];
-            //for (int i = 0; i < 100; i++)
-            //    arr[i] = i;                            
-                        
-
-            var root = parse(arr);
+                                                 
+            var root = Extension.FromArray(arr);
             
             Treap.print(root);
           
@@ -70,9 +42,16 @@ namespace ArrayAndSimpleQueries
             //2 1 4
 
             performQuery(ref root, new Query(1, 2, 4));
-            //performQuery(root, new Query(2, 3, 5));
-            //performQuery(root, new Query(1, 4, 7));
-            //performQuery(root, new Query(2, 1, 4));
+            Treap.print(root);
+            
+            performQuery(ref root, new Query(2, 3, 5));
+            Treap.print(root);
+            
+            performQuery(ref root, new Query(1, 4, 7));
+            Treap.print(root);
+
+            performQuery(ref root, new Query(2, 1, 4));
+            Treap.print(root);
 
             
             Treap.print(root);
@@ -106,19 +85,7 @@ namespace ArrayAndSimpleQueries
             Treap.split(6, root, out l, out r);
             Treap.print(root);            
         }
-
-        private static Node parse(int[] array)
-        {
-            var root = Treap.init(array[0]);
-
-            for (int i=1; i< array.Length;i++)
-            {                
-                Treap.add(ref root, Treap.init(array[i]));
-            }
-
-            return root;
-        }
-
+      
         private static void Solution()
         {
 
@@ -138,25 +105,50 @@ namespace ArrayAndSimpleQueries
             return Console.ReadLine().Split(' ').Select(s => int.Parse(s)).ToArray();
         }
 
-        private static void performQuery(ref Node root, Query q)
+        public static void performQuery(ref Node root, Query q)
         {
             switch (q.QueryType)
             {
                 case 1:
-                    Node l = null;
-                    Node middle = null; 
-                    Node r = null;
-                    
-                    Treap.split(q.i, root, out l, out r);
-                    Treap.split(q.j, r, out middle, out r);
-
-                    Treap.merge(ref middle, middle, l);
-                    Treap.merge(ref middle, middle, r);
-                    root = middle;
+                    root = PerforQ1(root, q);
                     break;
                 case 2:
+                    root = PerforQ2(root, q);
                     break;
             }
+        }
+
+        private static Node PerforQ1(Node root, Query q)
+        {
+            Node l = null;
+            Node middle = null;
+            Node r = null;
+
+            Treap.split(q.i, root, out l, out r);
+            Treap.split(q.j, r, out middle, out r);
+
+            Treap.merge(ref middle, middle, l);
+            Treap.merge(ref middle, middle, r);
+            root = middle;
+            root.recalc();
+            return root;
+        }
+
+        private static Node PerforQ2(Node root, Query q)
+        {
+            Node l = null;
+            Node middle = null;
+            Node r = null;
+
+            Treap.split(q.i, root, out l, out r);
+            
+            Treap.split(q.j, r, out middle, out r);
+
+            Treap.merge(ref l, l,  r );            
+            Treap.merge(ref l, l, middle);
+            root = l;
+            root.recalc();
+            return root;
         }
         
     }

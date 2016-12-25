@@ -96,25 +96,7 @@ namespace ArrayAndSimpleQueries
         {
             merge(ref root, root, nodeToAdd);
         }
-
-        //public static void insert(ref Node t, Node it)
-        //{
-        //    if (t == null)
-        //        t = it;
-        //    else if (it.prior > t.prior)
-        //    {
-        //        split(t, ref it.l, ref it.r, it.index);
-        //        t = it;
-        //    }
-        //    else
-        //    {                
-        //        if (t.index <= it.index)
-        //            insert(ref t.r, it);
-        //        else 
-        //            insert (ref t.l, it);
-        //    }
-        //}
-
+     
         static Random randomizer = new Random();
         public static Node init(int val)
         {
@@ -123,20 +105,7 @@ namespace ArrayAndSimpleQueries
             ret.prior = randomizer.Next(100);
             return ret;
         }
-
-        //public static Node init(int val, int index,  int priority)
-        //{
-        //    Node ret = new Node();
-        //    ret.index = index;
-        //    ret.val = val;
-        //    ret.prior = priority;
-        //    return ret;
-        //}
-
-        //public static void AddL(ref Node l)
-        //{
-        //    l = new Node() { index = 5 };
-        //}
+        
 
         public static void print(Node node)
         {
@@ -162,7 +131,7 @@ namespace ArrayAndSimpleQueries
 
     static class  Extension {
         
-        public static List<int> ConvertToArray(this Node root)
+        public static List<int> ToArray(this Node root)
         {
             List<int> l = new List<int>();
             Treap.traverse(root, 0, n => l.Add(n.val));
@@ -171,7 +140,7 @@ namespace ArrayAndSimpleQueries
 
         public static string ToArrayString(this Node root)
         {
-            return String.Join(" ", root.ConvertToArray()); 
+            return String.Join(" ", root.ToArray()); 
         }
 
         public static Node FromArray(params int[] a)
@@ -185,6 +154,7 @@ namespace ArrayAndSimpleQueries
                 Treap.merge(ref root, root, Treap.init(n));
             }
 
+            root.recalc();
             return root;
         }
     }
