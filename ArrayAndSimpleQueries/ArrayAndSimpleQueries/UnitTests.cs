@@ -10,6 +10,38 @@ namespace ArrayAndSimpleQueries
     [TestFixture]
     public class UnitTests
     {
+
+        [Test]
+        public void IsTaskSuccess()
+        {
+            int[] arr = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+            var root = Extension.FromArray(arr);
+
+            Treap.print(root);
+
+            //1 2 4
+            //2 3 5
+            //1 4 7
+            //2 1 4
+
+            Program.performQuery(ref root, new Query(1, 2, 4));
+            Treap.print(root);
+
+            Program.performQuery(ref root, new Query(2, 3, 5));
+            Treap.print(root);
+
+            Program.performQuery(ref root, new Query(1, 4, 7));
+            Treap.print(root);
+
+            Program.performQuery(ref root, new Query(2, 1, 4));
+            Treap.print(root);
+
+            CollectionAssert.AreEqual(new[] {2,3,6,5,7,8,4,1 }, root.ToArray());
+
+
+        }
+
         [Test]
         public void testMerge()
         {
@@ -128,18 +160,16 @@ namespace ArrayAndSimpleQueries
             Node root = null;
             root = Extension.FromArray(1,2,3,4,5,6,7,8);
             Program.performQuery(ref root, new Query(2, 3, 5));
-
             CollectionAssert.AreEqual(new[] { 1, 2, 6, 7, 8, 3, 4, 5 }, root.ToArray());
         }
 
         [Test]
         public void SplitRegression2()
-        {
+        {          
             Node root,l,r = null;
             root = Extension.FromArray(1, 2, 3, 4);
             Treap.split(3, root, out l, out r);
-
-            CollectionAssert.AreEqual(new[] { 4 }, r.ToArray());
+            CollectionAssert.AreEqual(new[] { 4 }, r.ToArray());         
         }
 
 
