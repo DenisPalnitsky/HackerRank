@@ -1,3 +1,6 @@
+#Two Characters
+by nabila_ahmed
+
 https://www.hackerrank.com/challenges/two-characters
 
 String  always consists of two distinct alternating characters. For example, if string 's two distinct characters are x and y, then t could be xyxyx or yxyxy but not xxyy or xyyx.
