@@ -1,4 +1,4 @@
-#Two Characters
+# Two Characters
 by nabila_ahmed
 
 https://www.hackerrank.com/challenges/two-characters
