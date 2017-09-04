@@ -28,19 +28,17 @@ namespace ArrayAndSimpleQueries
             int[] array = { 1, 2, 3, 4, 5, 6, 7, 8 };
 
             var root = parse(array);
-            
-            
-
+                        
 
             //1 2 4
             //2 3 5
             //1 4 7
             //2 1 4
 
-            perforQuery(root, new Query(1, 2, 4));
-            perforQuery(root, new Query(2, 3, 5));
-            perforQuery(root, new Query(1, 4, 7));
-            perforQuery(root, new Query(2, 1, 4));
+            //perforQuery(root, new Query(1, 2, 4));
+            //perforQuery(root, new Query(2, 3, 5));
+            //perforQuery(root, new Query(1, 4, 7));
+            //perforQuery(root, new Query(2, 1, 4));
 
             
             Treap.print(root);
@@ -50,14 +48,17 @@ namespace ArrayAndSimpleQueries
 
         private static Node parse(int[] array)
         {
-            int initialIndex =  array.Length / 2;
 
-            var root =  Treap.init(array[initialIndex], initialIndex);
+            var root = Treap.init(array[0]);
+
+            //Treap.merge(ref root, array[0] );
+
+
 
             for (int i=0;i< array.Length;i++)
             {
-                if (i!= initialIndex)
-                    Treap.insert(ref root, Treap.init(array[i], i));
+                if (i != initialIndex)
+                    Treap.insert(ref root, Treap.init(array[i]), i);
             }
 
             return root;
